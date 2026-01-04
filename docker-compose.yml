@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: almarkaz_app
+    image: almarkaz-app-dev
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/almarkaz
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=http://localhost:3000
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - db
+    networks:
+      - almarkaz_network
+
+  db:
+    container_name: almarkaz_db
+    image: postgres:17-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: almarkaz
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - almarkaz_network
+
+volumes:
+  postgres_data:
+
+
+networks:
+  almarkaz_network:
+    driver: bridge
