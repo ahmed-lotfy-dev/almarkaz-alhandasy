@@ -77,12 +77,17 @@ export const products = pgTable("products", {
 export const appointments = pgTable("appointments", {
   id: uuid("id").primaryKey().defaultRandom(),
   userId: text("user_id").references(() => user.id),
+  // Guest contact information (for non-authenticated users)
+  guestName: text("guest_name"),
+  guestEmail: text("guest_email"),
+  guestPhone: text("guest_phone"),
+  // Appointment details
   serviceType: text("service_type").notNull(),
-  machineType: text("machine_type").default("washing_machine"), // washing_machine, water_filter
+  machineType: text("machine_type").default("washing_machine"), // washing_machine, water_filter, refrigerator, other
   date: timestamp("date").notNull(),
   status: text("status").default("pending"), // pending, confirmed, completed, cancelled
   notes: text("notes"),
-  address: text("address"),
+  address: text("address").notNull(),
   latitude: decimal("latitude"),
   longitude: decimal("longitude"),
   createdAt: timestamp("created_at").defaultNow(),
