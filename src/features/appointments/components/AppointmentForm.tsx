@@ -1,8 +1,15 @@
 "use client";
 
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Loader2, CalendarIcon, Wrench } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { format } from "date-fns";
+import { ar } from "date-fns/locale";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -25,118 +32,177 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { ar } from "date-fns/locale";
-import { CalendarIcon } from "lucide-react";
-import { toast } from "sonner"; // Assuming toast is installed, otherwise alert
-import { useState } from "react";
+import { createAppointment } from "@/server/actions/appointments";
 import { authClient } from "@/lib/auth-client";
 
 const formSchema = z.object({
-  serviceType: z.enum(["repair", "installation", "maintenance"]),
-  machineType: z.enum(["washing_machine", "water_filter"]),
+  guestName: z.string().min(1, "الاسم مطلوب"),
+  guestEmail: z.string().email("البريد الإلكتروني غير صحيح").optional().or(z.literal("")),
+  guestPhone: z.string().min(10, "رقم الهاتف مطلوب"),
+  serviceType: z.string().min(1, "نوع الخدمة مطلوب"),
+  machineType: z.string().min(1, "نوع الجهاز مطلوب"),
   date: z.date(),
-  address: z.string().min(5, {
-    message: "العنوان يجب أن يكون 5 أحرف على الأقل",
-  }),
   notes: z.string().optional(),
+  address: z.string().min(1, "العنوان مطلوب"),
 });
 
-export function AppointmentForm() {
-  const { data: session } = authClient.useSession();
-  const [loading, setLoading] = useState(false);
+type FormValues = z.infer<typeof formSchema>;
 
-  const form = useForm<z.infer<typeof formSchema>>({
+export function AppointmentForm() {
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: session } = authClient.useSession();
+
+  const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      address: "",
+      guestName: session?.user?.name || "",
+      guestEmail: session?.user?.email || "",
+      guestPhone: "",
+      serviceType: "",
+      machineType: "",
       notes: "",
+      address: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    if (!session) {
-      alert("يجب تسجيل الدخول أولاً لحجز موعد");
-      window.location.href = "/sign-in";
-      return;
-    }
-
-    setLoading(true);
+  async function onSubmit(values: FormValues) {
+    setIsSubmitting(true);
     try {
-      const response = await fetch("/api/appointments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+      // Convert date to ISO string for server action
+      const result = await createAppointment({
+        ...values,
+        date: values.date.toISOString(),
       });
 
-      if (response.ok) {
-        alert("تم حجز الموعد بنجاح! سنتواصل معك قريباً لتأكيد الموعد.");
+      if (result.success) {
+        toast.success(result.message || "تم حجز الموعد بنجاح");
         form.reset();
+        router.refresh();
       } else {
-        const error = await response.text();
-        alert(`حدث خطأ: ${error}`);
+        toast.error(result.error || "حدث خطأ أثناء حجز الموعد");
       }
     } catch (error) {
-      alert("حدث خطأ أثناء الاتصال بالخادم");
+      toast.error("حدث خطأ غير متوقع");
     } finally {
-      setLoading(false);
+      setIsSubmitting(false);
     }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 max-w-2xl mx-auto py-10">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 bg-card p-8 rounded-2xl border shadow-lg">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="bg-primary/10 p-3 rounded-xl">
+              <Wrench className="w-6 h-6 text-primary" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold font-cairo">احجز موعد صيانة</h2>
+              <p className="text-muted-foreground">املأ البيانات التالية وسنتواصل معك قريباً</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="guestName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>الاسم الكامل *</FormLabel>
+                <FormControl>
+                  <Input placeholder="أحمد محمد" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="guestPhone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>رقم الهاتف *</FormLabel>
+                <FormControl>
+                  <Input placeholder="01234567890" dir="ltr" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <FormField
           control={form.control}
-          name="machineType"
+          name="guestEmail"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>نوع الجهاز</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="text-right">
-                    <SelectValue placeholder="اختر الجهاز" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent dir="rtl">
-                  <SelectItem value="washing_machine">غسالة</SelectItem>
-                  <SelectItem value="water_filter">فلتر مياه</SelectItem>
-                </SelectContent>
-              </Select>
+              <FormLabel>البريد الإلكتروني (اختياري)</FormLabel>
+              <FormControl>
+                <Input placeholder="example@email.com" type="email" dir="ltr" {...field} />
+              </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="serviceType"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>نوع الخدمة</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className="text-right">
-                    <SelectValue placeholder="اختر الخدمة" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent dir="rtl">
-                  <SelectItem value="repair">صيانة / إصلاح</SelectItem>
-                  <SelectItem value="installation">تركيب</SelectItem>
-                  <SelectItem value="maintenance">صيانة دورية</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="machineType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>نوع الجهاز *</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر نوع الجهاز" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="washing_machine">غسالة</SelectItem>
+                    <SelectItem value="refrigerator">ثلاجة</SelectItem>
+                    <SelectItem value="water_filter">فلتر مياه</SelectItem>
+                    <SelectItem value="other">أخرى</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="serviceType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>نوع الخدمة *</FormLabel>
+                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر نوع الخدمة" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="repair">إصلاح</SelectItem>
+                    <SelectItem value="installation">تركيب</SelectItem>
+                    <SelectItem value="maintenance">صيانة دورية</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <FormField
           control={form.control}
           name="date"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>تاريخ الموعد المفضل</FormLabel>
+              <FormLabel>تاريخ الموعد المفضل *</FormLabel>
               <Popover>
                 <PopoverTrigger asChild>
                   <FormControl>
@@ -183,9 +249,9 @@ export function AppointmentForm() {
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>العنوان بالتفصيل</FormLabel>
+              <FormLabel>العنوان *</FormLabel>
               <FormControl>
-                <Input placeholder="المدينة، الحي، اسم الشارع، رقم العمارة" {...field} className="text-right" />
+                <Textarea placeholder="المنطقة، الشارع، رقم المبنى..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -199,20 +265,19 @@ export function AppointmentForm() {
             <FormItem>
               <FormLabel>ملاحظات إضافية (اختياري)</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="اوصف المشكلة باختصار..."
-                  className="resize-none text-right"
-                  {...field}
-                />
+                <Textarea placeholder="أي تفاصيل إضافية عن المشكلة..." {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type="submit" className="w-full" size="lg" disabled={loading}>
-          {loading ? "جاري الحجز..." : "تأكيد الحجز"}
-        </Button>
+        <div className="flex justify-start pt-4">
+          <Button type="submit" disabled={isSubmitting} size="lg" className="gap-2">
+            {isSubmitting && <Loader2 className="w-4 h-4 animate-spin" />}
+            تأكيد الحجز
+          </Button>
+        </div>
       </form>
     </Form>
   );
