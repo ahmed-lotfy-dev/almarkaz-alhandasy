@@ -37,15 +37,15 @@ export function HeroCarousel({ slides = [] }: HeroCarouselProps) {
     {
       id: "1",
       title: "قطع غيار أصلية",
-      description: "نوفر جميع قطع غيار الغسالات وفلاتر المياه بأفضل الأسعار",
-      imageUrl: "/placeholder-hero-1.jpg",
+      description: "نوفر جميع قطع غيار الغسالات والثلاجات بأفضل الأسعار",
+      imageUrl: "/hero-spare-parts.png",
       linkUrl: "/shop",
     },
     {
       id: "2",
       title: "صيانة احترافية",
       description: "فريق فني متخصص لإصلاح الأعطال في منزلك",
-      imageUrl: "/placeholder-hero-2.jpg",
+      imageUrl: "/hero-maintenance.png",
       linkUrl: "/book",
     },
     {
