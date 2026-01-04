@@ -1,26 +1,44 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Package, CalendarDays, Users, DollarSign } from "lucide-react";
+import { productQueries } from "@/db/queries/products";
+import { appointmentQueries } from "@/db/queries/appointments";
+import { userQueries } from "@/db/queries/users";
 
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
   // These would be fetched from DB in a real server component
+  // Fetch real data
+  const [products, appointments, users] = await Promise.all([
+    productQueries.findAll(),
+    appointmentQueries.findAll(),
+    userQueries.findAll(),
+  ]);
+
+  const activeProducts = products.length; // Assuming all are active for now, or filter if 'isActive' exists
+  // const maintenanceRequests = appointments.length;
+
+  const pendingAppointments = appointments.filter(a => a.status === 'pending');
+  const newRequestsCount = pendingAppointments.length;
+
+  const usersCount = users.length;
+
   const stats = [
     {
       title: "إجمالي المنتجات",
-      value: "0",
+      value: activeProducts.toString(),
       icon: Package,
-      description: "0 منتج نشط",
+      description: `${activeProducts} منتج في المتجر`,
     },
     {
       title: "طلبات الصيانة",
-      value: "0",
+      value: appointments.length.toString(),
       icon: CalendarDays,
-      description: "0 طلب جديد",
+      description: `${newRequestsCount} طلب جديد`,
     },
     {
       title: "المستخدمين",
-      value: "0",
+      value: usersCount.toString(),
       icon: Users,
-      description: "0 مستخدم مسجل",
+      description: `${usersCount} مستخدم مسجل`,
     },
     {
       title: "المبيعات",
