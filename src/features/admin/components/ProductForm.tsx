@@ -37,10 +37,11 @@ const productSchema = z.object({
 });
 
 interface ProductFormProps {
-  initialData?: any; // To implement later for edit
+  initialData?: any;
+  productId?: string;
 }
 
-export function ProductForm({ initialData }: ProductFormProps) {
+export function ProductForm({ initialData, productId }: ProductFormProps) {
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState<string | null>(initialData?.image || null);
 
@@ -49,7 +50,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
     defaultValues: {
       name: initialData?.name || "",
       description: initialData?.description || "",
-      price: initialData?.price || 0,
+      price: initialData?.price ? parseFloat(initialData.price) : 0,
       stock: initialData?.stock || 0,
       categoryId: "1",
       isFeatured: initialData?.isFeatured || false,
@@ -60,14 +61,17 @@ export function ProductForm({ initialData }: ProductFormProps) {
   async function onSubmit(values: z.infer<typeof productSchema>) {
     setLoading(true);
     try {
-      const res = await fetch("/api/products", {
-        method: "POST",
+      const url = productId ? `/api/products/${productId}` : "/api/products";
+      const method = productId ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method: method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       });
 
       if (res.ok) {
-        alert("تم إضافة المنتج بنجاح");
+        alert(productId ? "تم تحديث المنتج بنجاح" : "تم إضافة المنتج بنجاح");
         window.location.href = "/admin/products";
       } else {
         alert("حدث خطأ أثناء الحفظ");

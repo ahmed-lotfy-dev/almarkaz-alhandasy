@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DeleteProductButton } from "@/features/admin/components/DeleteProductButton";
 
 export default async function ProductsAdminPage() {
   const allProducts = await db
@@ -57,9 +58,12 @@ export default async function ProductsAdminPage() {
                   <TableCell>{product.stock}</TableCell>
                   <TableCell>{product.category || "-"}</TableCell>
                   <TableCell>
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link href={`/admin/products/${product.id}/edit`}>تعديل</Link>
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link href={`/admin/products/${product.id}/edit`}>تعديل</Link>
+                      </Button>
+                      <DeleteProductButton id={product.id} />
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
