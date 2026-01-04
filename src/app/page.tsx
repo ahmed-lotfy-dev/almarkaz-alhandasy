@@ -28,6 +28,9 @@ export default async function Home() {
 
       {/* About Us Section */}
       <AboutUs />
+
+      {/* Location Section */}
+      <LocationSection />
     </main>
   );
 }

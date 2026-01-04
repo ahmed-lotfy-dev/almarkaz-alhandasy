@@ -9,7 +9,8 @@ export function LocationSection() {
   const lat = 30.963102;
   const lng = 31.155943;
   // Google Maps url for iframe
-  const mapSrc = `https://maps.google.com/maps?q=${lat},${lng}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+  // Using hl=ar for Arabic UI and z=17 for closer view
+  const mapSrc = `https://maps.google.com/maps?q=${lat},${lng}&hl=ar&z=17&ie=UTF8&iwloc=&output=embed`;
 
   // Directions URLs
   // Universal Google Maps link (works on Android/iOS/Web)
