@@ -73,8 +73,9 @@ export const products = pgTable("products", {
 
 export const appointments = pgTable("appointments", {
   id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id").references(() => user.id), // Changed to text to match user.id
-  serviceType: text("service_type").notNull(), // Repair, Installation
+  userId: text("user_id").references(() => user.id),
+  serviceType: text("service_type").notNull(),
+  machineType: text("machine_type").default("washing_machine"), // washing_machine, water_filter
   date: timestamp("date").notNull(),
   status: text("status").default("pending"), // pending, confirmed, completed, cancelled
   notes: text("notes"),
@@ -83,3 +84,15 @@ export const appointments = pgTable("appointments", {
   longitude: decimal("longitude"),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+export const heroSlides = pgTable("hero_slides", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  title: text("title"),
+  description: text("description"),
+  imageUrl: text("image_url").notNull(),
+  linkUrl: text("link_url"),
+  order: integer("order").default(0),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+

@@ -13,6 +13,9 @@ export const metadata: Metadata = {
   description: "متجر قطع غيار غسالات وفلاتر مياه مع حجز مواعيد للصيانة",
 };
 
+import { Navbar } from "@/components/layout/Navbar";
+import { Toaster } from "@/components/ui/sonner";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -21,9 +24,11 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body
-        className={`${cairo.variable} font-sans antialiased`}
+        className={`${cairo.variable} antialiased bg-background text-foreground`}
       >
+        <Navbar />
         {children}
+        <Toaster dir="rtl" />
       </body>
     </html>
   );
