@@ -7,7 +7,7 @@ FROM base AS deps
 WORKDIR /app
 
 # Copy package.json and bun.lockb
-COPY package.json bun.lockb ./
+COPY package.json bun.lock ./
 
 # Install dependencies
 RUN --mount=type=cache,target=/root/.bun/install/cache \
