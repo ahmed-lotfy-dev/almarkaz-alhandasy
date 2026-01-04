@@ -25,6 +25,11 @@ export function Navbar() {
   const pathname = usePathname();
   const { data: session } = authClient.useSession();
 
+  // Hide Navbar on admin routes
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
+
   const links = [
     { href: "/", label: "الرئيسية" },
     { href: "/shop", label: "المتجر" },
