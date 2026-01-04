@@ -48,6 +48,13 @@ export function HeroCarousel({ slides = [] }: HeroCarouselProps) {
       imageUrl: "/placeholder-hero-2.jpg",
       linkUrl: "/book",
     },
+    {
+      id: "3",
+      title: "أنظمة تنقية المياه",
+      description: "تمتع بمياه نقية وصحية مع أفضل فلاتر المياه المنزلية",
+      imageUrl: "/hero-water-filters.png",
+      linkUrl: "/shop/filters",
+    },
   ];
 
   return (
