@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { products } from "@/db/schema";
+import { productQueries } from "@/db/queries/products";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -28,10 +28,10 @@ export async function POST(req: Request) {
     const body = await req.json();
     const validatedData = productSchema.parse(body);
 
-    await db.insert(products).values({
+    await productQueries.create({
       name: validatedData.name,
       description: validatedData.description,
-      price: validatedData.price.toString(), 
+      price: validatedData.price.toString(),
       stock: validatedData.stock,
       categoryId: validatedData.categoryId ? validatedData.categoryId : null,
       image: validatedData.imageUrl,

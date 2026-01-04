@@ -1,9 +1,7 @@
-import { db } from "@/db";
-import { products } from "@/db/schema";
+import { productQueries } from "@/db/queries/products";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
 import * as z from "zod";
 
 const productSchema = z.object({
@@ -35,18 +33,15 @@ export async function PUT(
     const body = await req.json();
     const validatedData = productSchema.parse(body);
 
-    await db
-      .update(products)
-      .set({
-        name: validatedData.name,
-        description: validatedData.description,
-        price: validatedData.price.toString(),
-        stock: validatedData.stock,
-        categoryId: validatedData.categoryId ? validatedData.categoryId : null,
-        image: validatedData.imageUrl,
-        isFeatured: validatedData.isFeatured,
-      })
-      .where(eq(products.id, id));
+    await productQueries.update(id, {
+      name: validatedData.name,
+      description: validatedData.description,
+      price: validatedData.price.toString(),
+      stock: validatedData.stock,
+      categoryId: validatedData.categoryId ? validatedData.categoryId : null,
+      image: validatedData.imageUrl,
+      isFeatured: validatedData.isFeatured,
+    });
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -74,7 +69,7 @@ export async function DELETE(
 
     const { id } = await params;
 
-    await db.delete(products).where(eq(products.id, id));
+    await productQueries.delete(id);
 
     return NextResponse.json({ success: true });
   } catch (error) {

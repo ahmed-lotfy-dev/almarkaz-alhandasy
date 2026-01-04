@@ -1,26 +1,22 @@
 "use server";
 
-import { db } from "@/db";
+import { categoryQueries } from "@/db/queries/categories";
 import { categories } from "@/db/schema";
-import { eq, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 
 export type CategoryData = typeof categories.$inferInsert;
 
 export async function getCategories() {
-  return await db.select().from(categories).orderBy(desc(categories.createdAt));
+  return await categoryQueries.findAll();
 }
 
 export async function getCategoryById(id: string) {
-  return await db.query.categories.findFirst({
-    where: eq(categories.id, id),
-  });
+  return await categoryQueries.findById(id);
 }
 
 export async function createCategory(data: CategoryData) {
   try {
-    await db.insert(categories).values(data);
+    await categoryQueries.create(data);
     revalidatePath("/admin/categories");
     return { success: true };
   } catch (error) {
@@ -31,7 +27,7 @@ export async function createCategory(data: CategoryData) {
 
 export async function updateCategory(id: string, data: Partial<CategoryData>) {
   try {
-    await db.update(categories).set(data).where(eq(categories.id, id));
+    await categoryQueries.update(id, data);
     revalidatePath("/admin/categories");
     return { success: true };
   } catch (error) {
@@ -42,7 +38,7 @@ export async function updateCategory(id: string, data: Partial<CategoryData>) {
 
 export async function deleteCategory(id: string) {
   try {
-    await db.delete(categories).where(eq(categories.id, id));
+    await categoryQueries.delete(id);
     revalidatePath("/admin/categories");
     return { success: true };
   } catch (error) {
