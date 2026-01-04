@@ -1,6 +1,7 @@
 import { HeroCarousel } from "@/components/features/landing/HeroCarousel";
 import { AboutUs } from "@/features/landing/components/AboutUs";
 import { LocationSection } from "@/features/landing/components/LocationSection";
+import { CategoriesSection } from "@/features/landing/components/CategoriesSection";
 import { db } from "@/db";
 import { heroSlides } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
@@ -12,9 +13,13 @@ export default async function Home() {
   return (
     <main className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-8">
+      <section className="container mx-auto px-4 py-8 mb-8">
         <HeroCarousel slides={slides.length > 0 ? slides : undefined} />
       </section>
+
+      {/* Categories Section */}
+      <CategoriesSection />
+
       {/* Featured Products (Placeholder) */}
       <section className="container mx-auto px-4 py-12">
         <h2 className="text-3xl font-bold font-cairo mb-8 text-center">أحدث المنتجات</h2>

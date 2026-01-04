@@ -76,21 +76,38 @@ export function HeroCarousel({ slides = [] }: HeroCarouselProps) {
           <CarouselItem key={slide.id}>
             <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg">
               {/* Image Background */}
-              {/* Image Background */}
               <div className="absolute inset-0 z-0">
-                <Image src={slide.imageUrl} alt={slide.title || ""} fill className="object-cover" priority />
-                <div className="absolute inset-0 bg-black/20" />
+                <Image
+                  src={slide.imageUrl}
+                  alt={slide.title || ""}
+                  fill
+                  className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                  priority
+                />
               </div>
 
+              {/* Enhanced Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent md:bg-gradient-to-r md:from-black/80 md:via-black/30 md:to-transparent z-10" />
+
+              {/* Dynamic Particles/Texture Overlay (Optional CSS pattern) */}
+              <div className="absolute inset-0 opacity-10 bg-[url('/noise.png')] z-10 mix-blend-overlay pointer-events-none" />
+
               {/* Content Overlay */}
-              <div className="absolute inset-0 z-10 flex flex-col justify-center items-start px-8 md:px-16 bg-gradient-to-r from-black/60 to-transparent text-white">
-                <h2 className="text-4xl md:text-6xl font-bold font-cairo mb-4">{slide.title}</h2>
-                <p className="text-xl md:text-2xl mb-8 max-w-lg">{slide.description}</p>
-                {slide.linkUrl && (
-                  <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-lg">
-                    <Link href={slide.linkUrl}>{slide.buttonText || "تسوق الآن"}</Link>
-                  </Button>
-                )}
+              <div className="absolute inset-0 z-20 flex flex-col justify-center items-start px-8 md:px-24 text-white rtl:md:items-start ltr:md:items-end">
+                <div className="max-w-2xl space-y-6 animate-in slide-in-from-bottom-5 fade-in duration-700">
+                  <h2 className="text-4xl md:text-7xl font-bold font-cairo leading-tight drop-shadow-lg">
+                    {slide.title}
+                    <span className="text-primary block text-2xl md:text-4xl mt-2 font-medium opacity-90">المركز الهندسي</span>
+                  </h2>
+                  <p className="text-lg md:text-2xl text-gray-200 font-light leading-relaxed max-w-lg drop-shadow-md">
+                    {slide.description}
+                  </p>
+                  {slide.linkUrl && (
+                    <Button asChild size="lg" className="h-14 px-8 text-xl rounded-full bg-primary hover:bg-primary/90 shadow-[0_0_20px_rgba(59,130,246,0.5)] hover:shadow-[0_0_30px_rgba(59,130,246,0.6)] transition-all duration-300 transform hover:-translate-y-1">
+                      <Link href={slide.linkUrl}>{slide.buttonText || "تسوق الآن"}</Link>
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </CarouselItem>
