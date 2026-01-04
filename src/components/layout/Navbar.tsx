@@ -119,9 +119,6 @@ export function Navbar() {
               <Button asChild variant="ghost" size="sm">
                 <Link href="/sign-in">تسجيل الدخول</Link>
               </Button>
-              <Button asChild size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 shadow-sm hover:shadow-md transition-all">
-                <Link href="/sign-up">حساب جديد</Link>
-              </Button>
             </div>
           )}
         </div>
