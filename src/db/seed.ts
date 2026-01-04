@@ -4,12 +4,16 @@ import { heroSlides } from "./schema";
 const main = async () => {
   console.log("Seeding database...");
 
+  // Clear existing slides to avoid clutter/duplication
+  await db.delete(heroSlides);
+
   const slides = [
     {
       title: "قطع غيار أصلية",
       description: "نوفر جميع قطع غيار الغسالات والثلاجات بأفضل الأسعار",
       imageUrl: "/hero-spare-parts.png",
       linkUrl: "/shop",
+      buttonText: "تسوق الآن",
       order: 1,
       isActive: true,
     },
@@ -18,6 +22,7 @@ const main = async () => {
       description: "فريق فني متخصص لإصلاح الأعطال في منزلك",
       imageUrl: "/hero-maintenance.png",
       linkUrl: "/book",
+      buttonText: "احجز صيانتك",
       order: 2,
       isActive: true,
     },
@@ -25,7 +30,8 @@ const main = async () => {
       title: "أنظمة تنقية المياه",
       description: "تمتع بمياه نقية وصحية مع أفضل فلاتر المياه المنزلية",
       imageUrl: "/hero-water-filters.png",
-      linkUrl: "/shop/filters",
+      linkUrl: "/shop", // Reverted to shop since filters page is deleted
+      buttonText: "تسوق الآن",
       order: 3,
       isActive: true,
     },

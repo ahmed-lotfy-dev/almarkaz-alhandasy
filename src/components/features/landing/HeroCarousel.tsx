@@ -21,6 +21,7 @@ interface Slide {
   description: string | null;
   imageUrl: string;
   linkUrl: string | null;
+  buttonText?: string | null;
 }
 
 interface HeroCarouselProps {
@@ -75,13 +76,10 @@ export function HeroCarousel({ slides = [] }: HeroCarouselProps) {
           <CarouselItem key={slide.id}>
             <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg">
               {/* Image Background */}
+              {/* Image Background */}
               <div className="absolute inset-0 z-0">
-                {/* Placeholder color or Image */}
-                <div className="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400">
-                  {/* Once we have real images, use Next Image here */}
-                  <span className="text-4xl">Image Placeholder: {slide.title}</span>
-                  {/* <Image src={slide.imageUrl} alt={slide.title || ""} fill className="object-cover" /> */}
-                </div>
+                <Image src={slide.imageUrl} alt={slide.title || ""} fill className="object-cover" priority />
+                <div className="absolute inset-0 bg-black/20" />
               </div>
 
               {/* Content Overlay */}
@@ -90,7 +88,7 @@ export function HeroCarousel({ slides = [] }: HeroCarouselProps) {
                 <p className="text-xl md:text-2xl mb-8 max-w-lg">{slide.description}</p>
                 {slide.linkUrl && (
                   <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-lg">
-                    <Link href={slide.linkUrl}>تسوق الآن</Link>
+                    <Link href={slide.linkUrl}>{slide.buttonText || "تسوق الآن"}</Link>
                   </Button>
                 )}
               </div>

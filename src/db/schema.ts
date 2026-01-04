@@ -91,6 +91,7 @@ export const heroSlides = pgTable("hero_slides", {
   description: text("description"),
   imageUrl: text("image_url").notNull(),
   linkUrl: text("link_url"),
+  buttonText: text("button_text").default("تسوق الآن"),
   order: integer("order").default(0),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
