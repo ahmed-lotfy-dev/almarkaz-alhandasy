@@ -2,120 +2,140 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react"; // Added useState
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Menu, User } from "lucide-react";
 import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  ShoppingCart,
+  Menu,
+  Search, // Added Search
+  X, // Added X
+  LayoutDashboard // Added LayoutDashboard 
+} from "lucide-react";
 import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"; // Added DropdownMenu imports
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"; // Added Avatar imports
 import { authClient } from "@/lib/auth-client";
 
 export function Navbar() {
   const pathname = usePathname();
   const { data: session } = authClient.useSession();
+  const [isOpen, setIsOpen] = useState(false);
 
   // Hide Navbar on admin routes
   if (pathname?.startsWith("/admin")) {
     return null;
   }
 
-  const links = [
+  const navLinks = [
     { href: "/", label: "الرئيسية" },
     { href: "/shop", label: "المتجر" },
     { href: "/book", label: "حجز صيانة" },
-    // { href: "/contact", label: "اتصل بنا" },
   ];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto px-4 flex h-16 items-center justify-between">
-
+    <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl font-cairo text-primary">
-          <span className="text-2xl">⚡</span>
-          المركز الهندسي
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="bg-primary/10 p-2 rounded-lg group-hover:bg-primary/20 transition-colors">
+            <span className="text-2xl">⚡</span>
+          </div>
+          <span className="text-xl font-bold font-cairo text-primary tracking-tight">المركز الهندسي</span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex gap-6 items-center">
-          {links.map((link) => (
+        <div className="hidden md:flex items-center gap-8">
+          {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
+                "text-sm font-medium transition-colors hover:text-primary relative py-1",
                 pathname === link.href ? "text-primary font-bold" : "text-muted-foreground"
               )}
             >
               {link.label}
+              {pathname === link.href && (
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full" />
+              )}
             </Link>
           ))}
-        </nav>
+        </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-2">
-
-          {/* User Auth */}
-          {session ? (
-            <Button variant="ghost" size="icon" asChild title={session.user.name}>
-              <Link href="/profile">
-                <User className="h-5 w-5" />
-              </Link>
-            </Button>
-          ) : (
-            <Button variant="ghost" size="sm" asChild className="hidden md:flex">
-              <Link href="/sign-in">دخول</Link>
-            </Button>
-          )}
-
-          {/* Cart (Placeholder) */}
-          <Button variant="outline" size="icon" className="relative">
-            <ShoppingCart className="h-5 w-5" />
-            {/* <span className="absolute -top-1 -right-1 h-4 w-4 bg-primary text-white text-[10px] rounded-full flex items-center justify-center">0</span> */}
+        <div className="hidden md:flex items-center gap-3">
+          <Button variant="ghost" size="icon" className="rounded-full">
+            <Search className="w-5 h-5 text-muted-foreground" />
+          </Button>
+          <Button variant="ghost" size="icon" className="rounded-full relative">
+            <ShoppingCart className="w-5 h-5 text-muted-foreground" />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full animate-pulse" />
           </Button>
 
-          {/* Mobile Menu */}
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right">
-              <div className="flex flex-col gap-6 mt-8">
-                {links.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={cn(
-                      "text-lg font-medium transition-colors hover:text-primary",
-                      pathname === link.href ? "text-primary font-bold" : "text-muted-foreground"
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                {!session && (
-                  <Button asChild className="mt-4">
-                    <Link href="/sign-in">تسجيل الدخول</Link>
-                  </Button>
+          <div className="h-6 w-px bg-border mx-2" />
+
+          {session ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="gap-2 rounded-full pl-1 pr-3">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={session.user.image || ""} />
+                    <AvatarFallback className="bg-primary/10 text-primary">
+                      {session.user.name?.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm font-medium">{session.user.name}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>حسابي</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {(session.user?.role === "admin" || session.user?.role === "owner") && (
+                  <DropdownMenuItem asChild>
+                    <Link href="/admin" className="cursor-pointer">
+                      <LayoutDashboard className="mr-2 h-4 w-4 ml-2" />
+                      لوحة التحكم
+                    </Link>
+                  </DropdownMenuItem>
                 )}
-              </div>
-            </SheetContent>
-          </Sheet>
+                <DropdownMenuItem onClick={() => authClient.signOut()}>
+                  تسجيل الخروج
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/sign-in">تسجيل الدخول</Link>
+              </Button>
+              <Button asChild size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full px-6 shadow-sm hover:shadow-md transition-all">
+                <Link href="/sign-up">حساب جديد</Link>
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Menu Button */}
+        <div className="md:hidden flex items-center gap-4">
+          <Button variant="ghost" size="icon" className="rounded-full">
+            <ShoppingCart className="w-5 h-5" />
+          </Button>
+          <button onClick={() => setIsOpen(!isOpen)} className="p-2">
+            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
-    </header>
+    </nav>
   );
 }
