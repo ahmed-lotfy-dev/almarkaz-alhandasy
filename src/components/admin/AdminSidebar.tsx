@@ -27,6 +27,11 @@ const sidebarItems = [
     icon: Package,
   },
   {
+    title: "الأقسام",
+    href: "/admin/categories",
+    icon: Images, // Using Images icon temporarily or find a better one like Layers/List
+  },
+  {
     title: "المواعيد",
     href: "/admin/appointments",
     icon: CalendarDays,
@@ -57,10 +62,12 @@ export function AdminSidebar() {
   };
 
   return (
-    <div className="w-64 border-l bg-card h-screen sticky top-0 flex flex-col">
-      <div className="p-6 border-b flex items-center gap-2">
-        <span className="text-2xl">⚡</span>
-        <span className="font-bold text-lg font-cairo">لوحة الإدارة</span>
+    <div className="w-64 border-l bg-sidebar text-sidebar-foreground h-screen sticky top-0 flex flex-col shadow-xl">
+      <div className="p-6 border-b border-sidebar-border flex items-center gap-3">
+        <div className="bg-primary/20 p-2 rounded-lg">
+          <span className="text-2xl">⚡</span>
+        </div>
+        <span className="font-bold text-lg font-cairo tracking-wide">لوحة الإدارة</span>
       </div>
 
       <nav className="flex-1 p-4 space-y-2">
@@ -69,21 +76,23 @@ export function AdminSidebar() {
             key={item.href}
             href={item.href}
             className={cn(
-              "flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-primary",
-              pathname === item.href && "bg-primary/10 text-primary font-bold"
+              "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group",
+              pathname === item.href
+                ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-md font-bold translate-x-1"
+                : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:translate-x-1"
             )}
           >
-            <item.icon className="w-5 h-5" />
+            <item.icon className={cn("w-5 h-5", pathname === item.href ? "text-sidebar-primary-foreground" : "text-sidebar-foreground/50 group-hover:text-sidebar-accent-foreground")} />
             <span>{item.title}</span>
           </Link>
         ))}
 
-        <div className="pt-4 mt-4 border-t">
+        <div className="pt-4 mt-4 border-t border-sidebar-border">
           <Link
             href="/"
-            className="flex items-center gap-3 px-4 py-3 rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-primary mb-2"
+            className="flex items-center gap-3 px-4 py-3 rounded-lg text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground mb-2"
           >
-            <Home className="w-5 h-5" />
+            <Home className="w-5 h-5 opacity-70" />
             <span>العودة للموقع</span>
           </Link>
 

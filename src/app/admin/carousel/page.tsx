@@ -3,8 +3,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { db } from "@/db";
 import { heroSlides } from "@/db/schema";
 import { desc } from "drizzle-orm";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Edit } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function CarouselAdminPage() {
   const slides = await db.select().from(heroSlides).orderBy(desc(heroSlides.createdAt));
@@ -31,6 +32,12 @@ export default async function CarouselAdminPage() {
                   className="object-cover transition-transform group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  <Button variant="secondary" size="sm" asChild>
+                    <Link href={`/admin/carousel/${slide.id}/edit`}>
+                      <Edit className="w-4 h-4 ml-2" />
+                      تعديل
+                    </Link>
+                  </Button>
                   <Button variant="destructive" size="icon">
                     <Trash2 className="w-4 h-4" />
                   </Button>

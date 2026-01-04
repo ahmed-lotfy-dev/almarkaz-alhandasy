@@ -53,10 +53,13 @@ export const verification = pgTable("verification", {
 
 export const categories = pgTable("categories", {
   id: uuid("id").primaryKey().defaultRandom(),
-  name: text("name").notNull(), // Arabic name
+  name: text("name").notNull(),
   slug: text("slug").unique().notNull(),
-  parentId: uuid("parent_id"), // For nested categories (e.g., "Filters" > "Cartridges")
-  image: text("image"),
+  description: text("description"),
+  imageUrl: text("image_url"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  parentId: uuid("parent_id"), // For nested categories
 });
 
 export const products = pgTable("products", {

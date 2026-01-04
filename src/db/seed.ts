@@ -1,11 +1,43 @@
 import { db } from "./index";
-import { heroSlides } from "./schema";
+import { heroSlides, categories } from "./schema";
 
 const main = async () => {
   console.log("Seeding database...");
 
-  // Clear existing slides to avoid clutter/duplication
+  // Clear existing data
   await db.delete(heroSlides);
+  await db.delete(categories);
+
+  // Seed Categories
+  const categoryData = [
+    {
+      name: "غسالات",
+      slug: "washing-machines",
+      description: "أحدث موديلات الغسالات الأوتوماتيك والفوق أوتوماتيك",
+      isActive: true,
+    },
+    {
+      name: "فلاتر",
+      slug: "water-filters",
+      description: "فلاتر مياه منزلية ومحطات تنقية متكاملة",
+      isActive: true,
+    },
+    {
+      name: "قطع غيار غسالات",
+      slug: "washing-machine-parts",
+      description: "قطع غيار أصلية لجميع أنواع الغسالات",
+      isActive: true,
+    },
+    {
+      name: "قطع غيار فلاتر",
+      slug: "water-filter-parts",
+      description: "شمعات وقطع غيار فلاتر المياه",
+      isActive: true,
+    },
+  ];
+
+  await db.insert(categories).values(categoryData);
+  console.log("Categories seeded!");
 
   const slides = [
     {
@@ -30,7 +62,7 @@ const main = async () => {
       title: "أنظمة تنقية المياه",
       description: "تمتع بمياه نقية وصحية مع أفضل فلاتر المياه المنزلية",
       imageUrl: "/hero-water-filters.png",
-      linkUrl: "/shop", // Reverted to shop since filters page is deleted
+      linkUrl: "/shop",
       buttonText: "تسوق الآن",
       order: 3,
       isActive: true,
