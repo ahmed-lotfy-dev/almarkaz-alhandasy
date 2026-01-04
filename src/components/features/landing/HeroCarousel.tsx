@@ -1,0 +1,98 @@
+"use client";
+
+import * as React from "react";
+import Autoplay from "embla-carousel-autoplay";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+// Placeholder interface until we fetch from DB
+interface Slide {
+  id: string;
+  title: string | null;
+  description: string | null;
+  imageUrl: string;
+  linkUrl: string | null;
+}
+
+interface HeroCarouselProps {
+  slides?: Slide[];
+}
+
+export function HeroCarousel({ slides = [] }: HeroCarouselProps) {
+  const plugin = React.useRef(
+    Autoplay({ delay: 5000, stopOnInteraction: true })
+  );
+
+  // Fallback slides if none provided
+  const displaySlides = slides.length > 0 ? slides : [
+    {
+      id: "1",
+      title: "قطع غيار أصلية",
+      description: "نوفر جميع قطع غيار الغسالات وفلاتر المياه بأفضل الأسعار",
+      imageUrl: "/placeholder-hero-1.jpg",
+      linkUrl: "/shop",
+    },
+    {
+      id: "2",
+      title: "صيانة احترافية",
+      description: "فريق فني متخصص لإصلاح الأعطال في منزلك",
+      imageUrl: "/placeholder-hero-2.jpg",
+      linkUrl: "/book",
+    },
+  ];
+
+  return (
+    <Carousel
+      opts={{
+        align: "start",
+        direction: "rtl",
+        loop: true,
+      }}
+      plugins={[plugin.current]}
+      className="w-full relative"
+      dir="rtl"
+      onMouseEnter={plugin.current.stop}
+      onMouseLeave={plugin.current.reset}
+    >
+      <CarouselContent>
+        {displaySlides.map((slide) => (
+          <CarouselItem key={slide.id}>
+            <div className="relative h-[400px] md:h-[500px] w-full overflow-hidden rounded-lg">
+              {/* Image Background */}
+              <div className="absolute inset-0 z-0">
+                {/* Placeholder color or Image */}
+                <div className="w-full h-full bg-slate-200 flex items-center justify-center text-slate-400">
+                  {/* Once we have real images, use Next Image here */}
+                  <span className="text-4xl">Image Placeholder: {slide.title}</span>
+                  {/* <Image src={slide.imageUrl} alt={slide.title || ""} fill className="object-cover" /> */}
+                </div>
+              </div>
+
+              {/* Content Overlay */}
+              <div className="absolute inset-0 z-10 flex flex-col justify-center items-start px-8 md:px-16 bg-gradient-to-r from-black/60 to-transparent text-white">
+                <h2 className="text-4xl md:text-6xl font-bold font-cairo mb-4">{slide.title}</h2>
+                <p className="text-xl md:text-2xl mb-8 max-w-lg">{slide.description}</p>
+                {slide.linkUrl && (
+                  <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-lg">
+                    <Link href={slide.linkUrl}>تسوق الآن</Link>
+                  </Button>
+                )}
+              </div>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious className="left-4 rtl:left-auto rtl:right-4" />
+      <CarouselNext className="right-4 rtl:right-auto rtl:left-4" />
+    </Carousel>
+  );
+}
