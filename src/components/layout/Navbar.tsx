@@ -101,7 +101,7 @@ export function Navbar() {
               <DropdownMenuContent align="end" className="w-56">
                 <DropdownMenuLabel>حسابي</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                {(session.user?.role === "admin" || session.user?.role === "owner") && (
+                {((session.user as any)?.role === "admin" || (session.user as any)?.role === "owner") && (
                   <DropdownMenuItem asChild>
                     <Link href="/admin" className="cursor-pointer">
                       <LayoutDashboard className="mr-2 h-4 w-4 ml-2" />
