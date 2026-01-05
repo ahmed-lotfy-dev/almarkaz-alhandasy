@@ -8,9 +8,9 @@ import { ShoppingCart } from "lucide-react";
 interface ProductCardProps {
   id: string;
   name: string;
-  price: string;
-  imageUrl: string | null;
-  categoryName?: string;
+  price: string | number;
+  imageUrl?: string | null;
+  categoryName?: string | null;
   isFeatured?: boolean;
 }
 
@@ -44,7 +44,7 @@ export function ProductCard({ id, name, price, imageUrl, categoryName, isFeature
           </Link>
         </h3>
         <p className="text-lg font-bold text-primary">
-          {price} ج.م
+          {String(price)} ج.م
         </p>
       </CardContent>
       <CardFooter className="p-4 pt-0">
