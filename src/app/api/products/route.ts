@@ -80,18 +80,19 @@ export async function GET(req: Request) {
       .from(products)
       .leftJoin(categories, eq(products.categoryId, categories.id));
     // If category provided, treat it as either category ID (uuid) or slug
+    let rows;
     if (category) {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
         category
       );
       if (isUuid) {
-        q = q.where(eq(products.categoryId, category));
+        rows = await q.where(eq(products.categoryId, category));
       } else {
-        q = q.where(eq(categories.slug, category));
+        rows = await q.where(eq(categories.slug, category));
       }
+    } else {
+      rows = await q;
     }
-
-    const rows = await q;
 
     // Apply simple numeric filtering in-memory (price)
     const filtered = rows.filter((p: any) => {
