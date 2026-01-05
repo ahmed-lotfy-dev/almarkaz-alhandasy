@@ -48,3 +48,62 @@ export async function POST(req: Request) {
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
+
+// GET list of products with optional query filters
+export async function GET(req: Request) {
+  try {
+    const url = new URL(req.url);
+    const search = url.searchParams.get("search") || undefined;
+    const category = url.searchParams.get("category") || undefined;
+    const minPrice = url.searchParams.get("minPrice")
+      ? Number(url.searchParams.get("minPrice"))
+      : undefined;
+    const maxPrice = url.searchParams.get("maxPrice")
+      ? Number(url.searchParams.get("maxPrice"))
+      : undefined;
+
+    // Build query via drizzle
+    const { db } = await import("@/db");
+    const { products, categories } = await import("@/db/schema");
+    const { eq } = await import("drizzle-orm");
+
+    let q = db
+      .select({
+        id: products.id,
+        name: products.name,
+        price: products.price,
+        image: products.image,
+        isFeatured: products.isFeatured,
+        categoryId: products.categoryId,
+        categoryName: categories.name,
+      })
+      .from(products)
+      .leftJoin(categories, eq(products.categoryId, categories.id));
+    // If category provided, treat it as either category ID (uuid) or slug
+    if (category) {
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+        category
+      );
+      if (isUuid) {
+        q = q.where(eq(products.categoryId, category));
+      } else {
+        q = q.where(eq(categories.slug, category));
+      }
+    }
+
+    const rows = await q;
+
+    // Apply simple numeric filtering in-memory (price)
+    const filtered = rows.filter((p: any) => {
+      const priceNum = Number(p.price);
+      if (minPrice !== undefined && priceNum < minPrice) return false;
+      if (maxPrice !== undefined && priceNum > maxPrice) return false;
+      return true;
+    });
+
+    return NextResponse.json(filtered);
+  } catch (error) {
+    console.error("Products GET Error:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
+  }
+}
