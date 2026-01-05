@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react"; // Added useState
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/layout/ThemeToggle";
 import {
   ShoppingCart,
   Menu,
@@ -44,7 +45,7 @@ export function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
+    <nav className="sticky top-0 z-50 w-full border-b glass transition-all duration-300">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
@@ -75,6 +76,7 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
           <Button variant="ghost" size="icon" className="rounded-full">
             <Search className="w-5 h-5 text-muted-foreground" />
           </Button>
@@ -132,6 +134,26 @@ export function Navbar() {
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
+
+        {/* Mobile Menu Content to be implemented properly, for now just adding toggle for visibility if menu was open */}
+        {isOpen && (
+          <div className="absolute top-16 left-0 w-full bg-background border-b p-4 md:hidden flex flex-col gap-4 shadow-lg">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-lg font-medium py-2"
+                onClick={() => setIsOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <div className="flex items-center justify-between mt-4 border-t pt-4">
+              <span className="text-muted-foreground">المظهر</span>
+              <ThemeToggle />
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
