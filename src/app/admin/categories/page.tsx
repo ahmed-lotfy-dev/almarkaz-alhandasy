@@ -47,7 +47,7 @@ export default async function CategoriesAdminPage() {
                 </div>
 
                 <div className="px-6 py-4 border-t border-border/50">
-                  <p className="text-sm text-muted-foreground line-clamp-2 min-h-[40px] leading-relaxed">
+                  <p className="text-sm text-muted-foreground line-clamp-2 min-h-10 leading-relaxed">
                     {category.description || "لا يوجد وصف"}
                   </p>
                 </div>

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { db } from "@/db";
@@ -8,12 +10,17 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default async function CarouselAdminPage() {
-  const slides = await db.select().from(heroSlides).orderBy(desc(heroSlides.createdAt));
+  const slides = await db
+    .select()
+    .from(heroSlides)
+    .orderBy(desc(heroSlides.createdAt));
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold font-cairo text-primary">صور العرض (Carousel)</h1>
+        <h1 className="text-3xl font-bold font-cairo text-primary">
+          صور العرض (Carousel)
+        </h1>
         <Button className="gap-2">
           <Plus className="w-4 h-4" />
           إضافة صورة جديدة
@@ -44,7 +51,9 @@ export default async function CarouselAdminPage() {
                 </div>
               </div>
               <CardContent className="p-4">
-                <h3 className="font-bold text-lg mb-1">{slide.title || "بدون عنوان"}</h3>
+                <h3 className="font-bold text-lg mb-1">
+                  {slide.title || "بدون عنوان"}
+                </h3>
                 <p className="text-sm text-muted-foreground line-clamp-2">
                   {slide.description || "لا يوجد وصف"}
                 </p>

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { HeroSlideForm } from "@/features/admin/components/HeroSlideForm";
 import { db } from "@/db";
 import { heroSlides } from "@/db/schema";
@@ -5,7 +7,11 @@ import { eq } from "drizzle-orm";
 import { notFound, redirect } from "next/navigation";
 import { updateHeroSlide } from "@/server/actions/hero-slides";
 
-export default async function EditHeroSlidePage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditHeroSlidePage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
   const slide = await db.query.heroSlides.findFirst({
     where: eq(heroSlides.id, id),

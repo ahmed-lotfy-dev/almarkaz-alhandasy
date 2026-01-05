@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
@@ -60,7 +62,9 @@ export default async function ProductsAdminPage() {
                   <TableCell>
                     <div className="flex gap-2">
                       <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/admin/products/${product.id}/edit`}>تعديل</Link>
+                        <Link href={`/admin/products/${product.id}/edit`}>
+                          تعديل
+                        </Link>
                       </Button>
                       <DeleteProductButton id={product.id} />
                     </div>
@@ -69,7 +73,10 @@ export default async function ProductsAdminPage() {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
+                <TableCell
+                  colSpan={5}
+                  className="text-center py-8 text-muted-foreground"
+                >
                   لا توجد منتجات حتى الآن.
                 </TableCell>
               </TableRow>

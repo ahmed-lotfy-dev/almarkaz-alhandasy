@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { ProductForm } from "@/features/admin/components/ProductForm";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -7,9 +9,17 @@ import { products } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 
-export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function EditProductPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = await params;
-  const [product] = await db.select().from(products).where(eq(products.id, id)).limit(1);
+  const [product] = await db
+    .select()
+    .from(products)
+    .where(eq(products.id, id))
+    .limit(1);
 
   if (!product) {
     notFound();
@@ -23,7 +33,9 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
             <ArrowRight className="w-5 h-5" />
           </Link>
         </Button>
-        <h1 className="text-3xl font-bold font-cairo text-primary">تعديل المنتج</h1>
+        <h1 className="text-3xl font-bold font-cairo text-primary">
+          تعديل المنتج
+        </h1>
       </div>
 
       <ProductForm initialData={product} productId={id} />

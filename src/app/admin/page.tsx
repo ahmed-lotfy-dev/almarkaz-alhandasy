@@ -82,7 +82,7 @@ export default async function AdminDashboard() {
 
       {/* Recent Activity or Tables Placeholder */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="h-[300px] flex items-center justify-center border-dashed">
+        <Card className="h-75 flex items-center justify-center border-dashed">
           <span className="text-muted-foreground">
             رسم بياني للمبيعات (قريباً)
           </span>
