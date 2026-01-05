@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Package, CalendarDays, Users, DollarSign } from "lucide-react";
 import { productQueries } from "@/db/queries/products";
@@ -16,7 +18,9 @@ export default async function AdminDashboard() {
   const activeProducts = products.length; // Assuming all are active for now, or filter if 'isActive' exists
   // const maintenanceRequests = appointments.length;
 
-  const pendingAppointments = appointments.filter(a => a.status === 'pending');
+  const pendingAppointments = appointments.filter(
+    (a) => a.status === "pending"
+  );
   const newRequestsCount = pendingAppointments.length;
 
   const usersCount = users.length;
@@ -51,7 +55,9 @@ export default async function AdminDashboard() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold font-cairo text-primary">لوحة التحكم</h1>
+        <h1 className="text-3xl font-bold font-cairo text-primary">
+          لوحة التحكم
+        </h1>
         <p className="text-muted-foreground mt-2">نظرة عامة على أداء المتجر</p>
       </div>
 
@@ -77,7 +83,9 @@ export default async function AdminDashboard() {
       {/* Recent Activity or Tables Placeholder */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="h-[300px] flex items-center justify-center border-dashed">
-          <span className="text-muted-foreground">رسم بياني للمبيعات (قريباً)</span>
+          <span className="text-muted-foreground">
+            رسم بياني للمبيعات (قريباً)
+          </span>
         </Card>
         <Card className="h-[300px] flex items-center justify-center border-dashed">
           <span className="text-muted-foreground">آخر الطلبات (قريباً)</span>
