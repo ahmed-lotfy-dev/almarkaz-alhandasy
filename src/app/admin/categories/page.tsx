@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { getCategories } from "@/server/actions/categories";
@@ -27,7 +29,7 @@ export default async function CategoriesAdminPage() {
           categories.map((category) => (
             <Card key={category.id} className="overflow-hidden group hover:shadow-2xl hover:border-primary/50 transition-all duration-300">
               <CardContent className="p-0">
-                <div className="p-6 flex items-start justify-between bg-gradient-to-br from-card to-accent/5">
+                <div className="p-6 flex items-start justify-between bg-linear-to-brrom-card to-accent/5">
                   <div className="flex items-center gap-4">
                     <div className="p-3 bg-primary/10 rounded-xl text-primary group-hover:scale-110 transition-transform duration-300 shadow-inner">
                       <Package className="w-6 h-6" />

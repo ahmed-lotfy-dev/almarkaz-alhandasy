@@ -5,11 +5,28 @@ import { heroSlides, categories, products, appointments } from "./schema.js";
 const main = async () => {
   console.log("Seeding database...");
 
+  // Helper to safely delete from a table (skip if table doesn't exist)
+  async function safeDelete(table: any, name: string) {
+    try {
+      await db.delete(table);
+      console.log(`Cleared ${name}`);
+    } catch (err: any) {
+      // Drizzle wraps PG errors; if table doesn't exist, skip
+      const msg = err?.message || String(err);
+      if (msg.includes('does not exist') || msg.includes('42P01')) {
+        console.warn(`Skipping delete ${name}: table does not exist`);
+      } else {
+        console.error(`Error deleting ${name}:`, err);
+        throw err;
+      }
+    }
+  }
+
   // Clear existing data (order matters for foreign keys)
-  await db.delete(appointments);
-  await db.delete(products);
-  await db.delete(heroSlides);
-  await db.delete(categories);
+  await safeDelete(appointments, 'appointments');
+  await safeDelete(products, 'products');
+  await safeDelete(heroSlides, 'hero_slides');
+  await safeDelete(categories, 'categories');
 
   // Seed Categories
   const categoryData = [
