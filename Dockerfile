@@ -14,7 +14,7 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Environment variables must be present at build time
+# Environment variables
 ARG DATABASE_URL
 ENV DATABASE_URL=${DATABASE_URL}
 ARG POSTGRES_SSL_CERT
@@ -40,12 +40,12 @@ COPY --from=builder /app/public ./public
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
 
-# Automatically leverage output traces to reduce image size
-# https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+# COPY STANDALONE CONTENTS EXPLICITLY
+# Using /app/.next/standalone/ (trailing slash) ensures we copy contents, not the dir itself
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/ ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-# Optional: Copy BUILD_ID if it allows better caching/versioning, although not strictly required for standalone
-COPY --from=builder --chown=nextjs:nodejs /app/.next/BUILD_ID* ./.next/BUILD_ID
+# Copy BUILD_ID explicitly to avoid "no production build" errors
+COPY --from=builder --chown=nextjs:nodejs /app/.next/BUILD_ID* ./.next/
 
 USER nextjs
 
