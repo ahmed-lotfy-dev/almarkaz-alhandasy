@@ -4,17 +4,10 @@ import { HeroCarousel } from "@/components/features/landing/HeroCarousel";
 import { AboutUs } from "@/features/landing/components/AboutUs";
 import { LocationSection } from "@/features/landing/components/LocationSection";
 import { CategoriesSection } from "@/features/landing/components/CategoriesSection";
-import { db } from "@/db";
-import { heroSlides } from "@/db/schema";
-import { desc, eq } from "drizzle-orm";
+import { heroSlideQueries } from "@/db/queries/hero-slides";
 
 export default async function Home() {
-  // Fetch active slides from DB
-  const slides = await db
-    .select()
-    .from(heroSlides)
-    .where(eq(heroSlides.isActive, true))
-    .orderBy(desc(heroSlides.order));
+  const slides = await heroSlideQueries.findActive();
 
   return (
     <main className="min-h-screen bg-background">

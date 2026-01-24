@@ -2,18 +2,13 @@ export const dynamic = "force-dynamic";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { db } from "@/db";
-import { heroSlides } from "@/db/schema";
-import { desc } from "drizzle-orm";
+import { heroSlideQueries } from "@/db/queries/hero-slides";
 import { Plus, Trash2, Edit } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 export default async function CarouselAdminPage() {
-  const slides = await db
-    .select()
-    .from(heroSlides)
-    .orderBy(desc(heroSlides.createdAt));
+  const slides = await heroSlideQueries.findAll();
 
   return (
     <div className="space-y-6">

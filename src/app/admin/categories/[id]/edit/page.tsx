@@ -1,9 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { CategoryForm } from "@/features/admin/components/CategoryForm";
-import { db } from "@/db";
-import { categories } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { categoryQueries } from "@/db/queries/categories";
 import { notFound, redirect } from "next/navigation";
 import { updateCategory } from "@/server/actions/categories";
 
@@ -13,9 +11,7 @@ export default async function EditCategoryPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const category = await db.query.categories.findFirst({
-    where: eq(categories.id, id),
-  });
+  const category = await categoryQueries.findById(id);
 
   if (!category) {
     notFound();

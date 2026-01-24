@@ -4,9 +4,7 @@ import { ProductForm } from "@/features/admin/components/ProductForm";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { db } from "@/db";
-import { products } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { productQueries } from "@/db/queries/products";
 import { notFound } from "next/navigation";
 
 export default async function EditProductPage({
@@ -15,11 +13,7 @@ export default async function EditProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [product] = await db
-    .select()
-    .from(products)
-    .where(eq(products.id, id))
-    .limit(1);
+  const product = await productQueries.findById(id);
 
   if (!product) {
     notFound();

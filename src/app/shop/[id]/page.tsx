@@ -1,8 +1,6 @@
 export const dynamic = "force-dynamic";
 
-import { db } from "@/db";
-import { products, categories } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { productQueries } from "@/db/queries/products";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -19,21 +17,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
 
   // Fetch product with category
-  const [product] = await db
-    .select({
-      id: products.id,
-      name: products.name,
-      description: products.description,
-      price: products.price,
-      stock: products.stock,
-      image: products.image,
-      isFeatured: products.isFeatured,
-      categoryName: categories.name,
-    })
-    .from(products)
-    .leftJoin(categories, eq(products.categoryId, categories.id))
-    .where(eq(products.id, id))
-    .limit(1);
+  const product = await productQueries.findByIdWithCategory(id);
 
   if (!product) {
     notFound();

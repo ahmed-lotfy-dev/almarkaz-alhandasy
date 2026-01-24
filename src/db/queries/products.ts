@@ -1,8 +1,24 @@
 import { db } from "@/db";
-import { products } from "@/db/schema";
+import { products, categories } from "@/db/schema";
 import { eq, desc } from "drizzle-orm";
 
 export const productQueries = {
+  /**
+   * Find all products with their category names
+   */
+  findWithCategory: async () => {
+    return db
+      .select({
+        id: products.id,
+        name: products.name,
+        price: products.price,
+        stock: products.stock,
+        category: categories.name,
+      })
+      .from(products)
+      .leftJoin(categories, eq(products.categoryId, categories.id));
+  },
+
   /**
    * Find all products ordered by creation date (newest first)
    */
@@ -17,6 +33,28 @@ export const productQueries = {
     const [product] = await db
       .select()
       .from(products)
+      .where(eq(products.id, id))
+      .limit(1);
+    return product || null;
+  },
+
+  /**
+   * Find a single product by ID with category name
+   */
+  findByIdWithCategory: async (id: string) => {
+    const [product] = await db
+      .select({
+        id: products.id,
+        name: products.name,
+        description: products.description,
+        price: products.price,
+        stock: products.stock,
+        image: products.image,
+        isFeatured: products.isFeatured,
+        categoryName: categories.name,
+      })
+      .from(products)
+      .leftJoin(categories, eq(products.categoryId, categories.id))
       .where(eq(products.id, id))
       .limit(1);
     return product || null;

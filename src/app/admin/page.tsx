@@ -87,7 +87,7 @@ export default async function AdminDashboard() {
             رسم بياني للمبيعات (قريباً)
           </span>
         </Card>
-        <Card className="h-[300px] flex items-center justify-center border-dashed">
+        <Card className="h-75 flex items-center justify-center border-dashed">
           <span className="text-muted-foreground">آخر الطلبات (قريباً)</span>
         </Card>
       </div>

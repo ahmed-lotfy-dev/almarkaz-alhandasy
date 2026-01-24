@@ -15,8 +15,7 @@ export const heroSlideQueries = {
    * Find active slides ordered by order field
    */
   findActive: async () => {
-    // Assuming you might want this later, but for now matching action needs
-    return db.select().from(heroSlides).where(eq(heroSlides.isActive, true)).orderBy(heroSlides.order);
+    return db.select().from(heroSlides).where(eq(heroSlides.isActive, true)).orderBy(desc(heroSlides.order));
   },
 
   /**

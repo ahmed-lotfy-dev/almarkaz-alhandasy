@@ -3,9 +3,7 @@ export const dynamic = "force-dynamic";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { db } from "@/db";
-import { products, categories } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { productQueries } from "@/db/queries/products";
 import {
   Table,
   TableBody,
@@ -17,16 +15,7 @@ import {
 import { DeleteProductButton } from "@/features/admin/components/DeleteProductButton";
 
 export default async function ProductsAdminPage() {
-  const allProducts = await db
-    .select({
-      id: products.id,
-      name: products.name,
-      price: products.price,
-      stock: products.stock,
-      category: categories.name,
-    })
-    .from(products)
-    .leftJoin(categories, eq(products.categoryId, categories.id));
+  const allProducts = await productQueries.findWithCategory();
 
   return (
     <div className="space-y-6">
