@@ -5,57 +5,66 @@ import { Button } from "@/components/ui/button";
 
 export function AboutUs() {
   return (
-    <section className="py-16 bg-secondary/20">
-      <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto space-y-8 text-center">
-          <div>
-            <h2 className="text-3xl font-bold font-cairo mb-4 text-primary">عن المركز الهندسي</h2>
-            <div className="h-1 w-20 bg-primary rounded-full mb-6 mx-auto"></div>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              نحن المركز الهندسي، متخصصون في بيع وصيانة قطع غيار الغسالات ومحطات الفلاتر.
-              نقدم خدمات صيانة متميزة بأيدي مهندسين محترفين، ونوفر أجود قطع الغيار الأصلية.
-              هدفنا هو راحتكم وتقديم حلول مستدامة لأجهزتكم المنزلية.
-            </p>
+    <section className="py-24 bg-slate-50 dark:bg-slate-950 px-4">
+      <div className="container mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+          <div className="space-y-10 order-2 lg:order-1">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-accent/10 text-accent text-xs font-bold font-heading uppercase tracking-widest">
+                <div className="w-2 h-2 rounded-full bg-accent animate-pulse" />
+                من نحن
+              </div>
+              <h2 className="text-4xl md:text-6xl font-bold font-heading text-primary leading-tight">
+                المركز الهندسي <br />
+                <span className="text-accent underline decoration-accent/30 underline-offset-8">لخدمات الصيانة والبيع</span>
+              </h2>
+              <p className="text-xl text-muted-foreground leading-relaxed font-sans max-w-xl">
+                نحن المركز الهندسي، متخصصون في توفير حلول متكاملة لقطع غيار الغسالات ومحطات تنقية المياه.
+                خبرتنا تمتد لسنوات في تقديم أفضل المنتجات الأصلية وخدمات الصيانة الاحترافية.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              {[
+                { icon: MapPin, title: "عنواننا", detail: "شارع ١٠، المنشية الجديدة، المحلة الكبرى" },
+                { icon: Phone, title: "هاتفنا", detail: "012 2809 3434 | 010 2447 9427" },
+                { icon: Mail, title: "بريدنا", detail: "info@almarkaz-alhandasy.com" },
+              ].map((item, idx) => (
+                <div key={idx} className="flex items-center gap-4 p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow">
+                  <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
+                    <item.icon className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold font-heading text-sm text-muted-foreground">{item.title}</h4>
+                    <p className="font-bold font-sans text-lg">{item.detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex gap-4 pt-4">
+              {[Facebook, Instagram, Twitter].map((Icon, idx) => (
+                <Button key={idx} variant="outline" size="icon" className="w-12 h-12 rounded-full border-slate-200 dark:border-slate-800 hover:bg-accent hover:text-white hover:border-accent transition-all duration-300">
+                  <Icon className="w-5 h-5" />
+                </Button>
+              ))}
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-right md:text-center">
-            <div className="flex flex-col items-center gap-3 p-4 bg-background rounded-xl shadow-sm">
-              <div className="p-3 bg-primary/10 rounded-full text-primary">
-                <MapPin className="w-6 h-6" />
+          <div className="relative order-1 lg:order-2">
+            <div className="relative aspect-square w-full max-w-lg mx-auto rounded-3xl overflow-hidden shadow-2xl">
+              <div className="absolute inset-0 bg-gradient-to-tr from-primary to-accent opacity-20" />
+              <div className="absolute inset-0 flex items-center justify-center text-accent/20">
+                <span className="text-[200px] font-bold">AH</span>
               </div>
-              <p className="font-medium">شارع ١٠، المنشية الجديدة، المحلة الكبرى، الغربية</p>
-            </div>
-
-            <div className="flex flex-col items-center gap-3 p-4 bg-background rounded-xl shadow-sm">
-              <div className="p-3 bg-primary/10 rounded-full text-primary">
-                <Phone className="w-6 h-6" />
-              </div>
-              <div className="flex flex-col" dir="ltr">
-                <a href="tel:+201228093434" className="hover:text-primary transition-colors font-bold">012 2809 3434</a>
-                <a href="tel:+201024479427" className="hover:text-primary transition-colors font-bold">010 2447 9427</a>
+              <div className="absolute bottom-8 left-8 right-8 glass-card p-8 rounded-2xl animate-in slide-in-from-bottom-4 duration-500">
+                <h4 className="text-2xl font-bold font-heading mb-2">ثقة وخبرة</h4>
+                <p className="text-sm opacity-80 font-sans leading-relaxed">أكثر من 10 سنوات من التميز في خدمة شركائنا وعملائنا في جميع أنحاء الغربية.</p>
               </div>
             </div>
-
-            <div className="flex flex-col items-center gap-3 p-4 bg-background rounded-xl shadow-sm">
-              <div className="p-3 bg-primary/10 rounded-full text-primary">
-                <Mail className="w-6 h-6" />
-              </div>
-              <a href="mailto:info@almarkaz-alhandasy.com" className="hover:text-primary transition-colors">info@almarkaz-alhandasy.com</a>
-            </div>
-          </div>
-
-          <div className="flex justify-center gap-4 pt-4">
-            <a href="https://www.facebook.com/almarkazalhandasiu/?locale=ar_AR" target="_blank" rel="noopener noreferrer">
-              <Button variant="outline" size="icon" className="hover:bg-blue-600 hover:text-white transition-colors">
-                <Facebook className="w-5 h-5" />
-              </Button>
-            </a>
-            <Button variant="outline" size="icon" className="hover:bg-pink-600 hover:text-white transition-colors">
-              <Instagram className="w-5 h-5" />
-            </Button>
-            <Button variant="outline" size="icon" className="hover:bg-sky-500 hover:text-white transition-colors">
-              <Twitter className="w-5 h-5" />
-            </Button>
+            {/* Decorative dots */}
+            <div className="absolute -top-6 -right-6 w-32 h-32 bg-[radial-gradient(#0369A1_2px,transparent_2px)] [background-size:16px_16px] opacity-30" />
+            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-[radial-gradient(#0369A1_2px,transparent_2px)] [background-size:16px_16px] opacity-30" />
           </div>
         </div>
       </div>

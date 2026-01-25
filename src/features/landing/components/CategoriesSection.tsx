@@ -12,39 +12,52 @@ export async function CategoriesSection() {
   }
 
   return (
-    <section className="container mx-auto px-4 py-20 bg-accent/5">
-      <div className="text-center mb-12 space-y-4">
-        <h2 className="text-4xl font-bold font-cairo text-primary">تصفح الأقسام</h2>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">استكشف منتجاتنا المتنوعة من قطع الغيار الأصلية وفلاتر المياه</p>
+    <section className="container mx-auto px-4 py-24 bg-background relative overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl -z-10" />
+
+      <div className="text-center mb-16 space-y-4">
+        <h2 className="text-4xl md:text-5xl font-bold font-heading text-primary tracking-tight">تصفح الأقسام</h2>
+        <div className="w-24 h-1.5 bg-accent mx-auto rounded-full" />
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto font-sans">
+          استكشف منتجاتنا المتنوعة من قطع الغيار الأصلية وفلاتر المياه المختارة بعناية
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 px-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-4">
         {allCategories.map((category) => (
           <Link
             key={category.id}
             href={`/shop?category=${category.slug}`}
-            className="group relative flex flex-col items-center justify-center gap-6 p-8 rounded-2xl bg-card border border-border/50 shadow-sm hover:shadow-2xl hover:border-primary/30 transition-all duration-300 transform hover:-translate-y-2 overflow-hidden"
+            className="group relative flex flex-col items-center justify-center gap-8 p-10 rounded-3xl glass-card transition-all duration-500 overflow-hidden"
           >
-            {/* Background Hover Effect */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            {/* Glossy Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-inner group-hover:shadow-[0_0_15px_rgba(59,130,246,0.4)]">
+            {/* Icon Container */}
+            <div className="relative w-24 h-24 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 group-hover:bg-accent group-hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-2xl group-hover:shadow-accent/30 group-hover:-rotate-3">
               {category.imageUrl ? (
-                // If we had real images, we'd use NextImage here
-                <Package className="w-10 h-10" />
+                <Package className="w-12 h-12" />
               ) : (
-                <Package className="w-10 h-10" />
+                <Package className="w-12 h-12" />
               )}
+
+              {/* Decorative Ring */}
+              <div className="absolute inset-0 rounded-2xl border-2 border-accent/0 group-hover:border-accent/50 scale-110 opacity-0 group-hover:opacity-100 transition-all duration-500" />
             </div>
 
-            <div className="text-center relative z-10">
-              <h3 className="font-bold text-xl mb-2 group-hover:text-primary transition-colors">{category.name}</h3>
+            <div className="text-center relative z-10 space-y-2">
+              <h3 className="font-bold font-heading text-2xl group-hover:text-accent transition-colors duration-300">{category.name}</h3>
               {category.description && (
-                <p className="text-xs text-muted-foreground line-clamp-2 max-w-[150px] mx-auto opacity-70 group-hover:opacity-100 transition-opacity">
+                <p className="text-sm text-muted-foreground font-sans line-clamp-2 max-w-[200px] mx-auto opacity-80 group-hover:opacity-100 transition-opacity duration-300">
                   {category.description}
                 </p>
               )}
             </div>
+
+            {/* Bottom Accent Bar */}
+            <div className="absolute bottom-0 left-0 w-0 h-1 bg-accent group-hover:w-full transition-all duration-500" />
           </Link>
         ))}
       </div>
